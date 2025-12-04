@@ -1,132 +1,266 @@
-# 💊 Dashboard Pharma - The Intelligent Pharmacy Management System
+# 💊 **Pharmacy Dashboard – MVP Documentation**
 
-## 🚀 Project Overview (MVP)
+## **0. Team & Roles** 👥
 
-The **Dashboard Pharma** is an intelligent, web-based Minimum Viable Product (MVP) designed to centralize and modernize the daily operations of independent pharmacies. It replaces fragmented tools (Excel, paper) with a secure, unified platform.
+### **Team Composition**
 
-| Key Metric | Detail |
+* **Solo Developer** (Full-Stack) Mathieu GODALIER
+
+### **Roles Covered**
+
+* Product Owner 🎯
+* UI/UX Designer 🎨
+* Backend Developer ⚙️
+* Frontend Developer 🖥️
+* DevOps / Tester ✅
+
+### **Work Standards**
+
+* Frequent commits with clear messages ✍️
+* Continuous documentation 📖
+* Focused work sessions (Pomodoro) 🍅
+* Weekly progress review 🗓️
+* Regular feature testing 🔎
+
+### **Tools**
+
+* **Versioning**: Git / GitHub 🐙
+* **Documentation**: README, notes 📝
+* **Project Management**: Trello 📋
+* **Quick Notes**: TODO.md 📌
+
+### **Decision Process**
+
+* SMART approach for all major decisions 🧠
+
+### **Stakeholders**
+
+| Stakeholder | Role | Impact | Involvement |
+| :--- | :--- | :--- | :--- |
+| Pharmacists 🧑‍⚕️ | Primary Users | Critical | High |
+| Pharmacy Assistants 🤝 | Secondary Users | High | Medium |
+| Patients 🧍 | Information Providers | Low | Low |
+| Doctors 🩺 | Directory Data | Low | Low |
+| Developer 💻 | Creator / Maintainer | Critical | Very High |
+
+---
+
+## **1. Brainstorming & Idea Evaluation** 💡
+
+### **Idea Generation**
+
+* Mind Mapping 🗺️
+* SCAMPER framework
+* “How Might We” questions 🤔
+
+> * Reduce stock errors
+> * Improve team coordination
+> * Prevent drug-interaction risks
+> * Centralize pharmaceutical information
+
+### **Idea Evaluation**
+
+| # | Project Idea | Description | Feas. | Impact | Complexity | Risks | Score |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| 1 | Complete Pharmacy Dashboard | Inventory + Sales + Calendar + AI | 4 | 5 | High | AI/time | **20** |
+| 2 | Stock Management Only | Inventory + alerts | 5 | 3 | Low | Limited scope | 15 |
+| 3 | Pharma Chatbot | Interactions + info | 3 | 4 | Medium | Data quality | 15 |
+| 4 | Team Calendar | Shift management | 5 | 2 | Low | Low impact | 10 |
+| 5 | Patient CRM | Client database | 4 | 3 | Medium | GDPR | 15 |
+
+### **Selected Idea**
+
+**Complete Pharmacy Dashboard — Score 20/20** ✔️🥇
+
+---
+
+## **2. MVP Definition** 🏗️
+
+### **Problem** 📉
+
+Pharmacies rely on fragmented and outdated tools (Excel, paper planning, isolated software). This fragmentation leads to:
+
+* Time loss (20–30 min/day) ⏱️
+* Frequent stock errors ❌
+* No proactive alerts
+* Poor internal coordination
+* Slow access to essential information (drug interactions, doctors directory)
+
+### **Solution** ✨
+
+A unified, intelligent web dashboard providing:
+
+* Real-time inventory and sales management 📈
+* AI-assisted chatbot (interactions, alerts, schedule, directory) 🤖
+* Team calendar 📅
+* Basic client database 🗄️
+* Regional doctors directory 🗺️
+* Fully responsive interface 📱
+
+### **Target Audience** 🎯
+
+* Pharmacists
+* Pharmacy assistants
+* Technicians
+> Âge: 25–60, basic to intermediate computer skills.
+
+### **Application Type** 🛠️
+
+* **Responsive Web App** (desktop/tablet)
+* **Backend**: Flask + SQLAlchemy 🐍
+* **Frontend**: HTML5, CSS3, JavaScript
+* **API**: Flask-RESTX (Swagger built-in) 🔌
+* **NLP**: NLTK / spaCy
+* **Charts**: Chart.js
+* **Database**: SQLite (MVP) 💾
+
+### **Justification**
+
+* High impact 🚀
+* Manageable solo development
+* Strong demo value
+* Scalable architecture
+* Real-world relevance
+
+---
+
+## **MVP SMART Objectives** 🚀
+
+| # | Objective | Description | Deadline |
+| :--- | :--- | :--- | :--- |
+| 1 | Inventory & Sales Module | CRUD + alerts | Weeks 1–3 |
+| 2 | Chatbot (4 query types) | Interactions, stock, directory, schedule | Weeks 4–6 |
+| 3 | Responsive Dashboard UI | Home + 5 modules | Weeks 2–7 |
+
+---
+
+## **Key MVP Features** ⭐
+
+### **1. Inventory Management** 📦
+
+* Medication CRUD
+* Stock tracking
+* Low-stock alerts 🔔
+* History
+> **Priority: Critical**
+
+### **2. Sales Tracking** 💰
+
+* Sales records
+* Statistics (top products, revenue)
+* Graphs via Chart.js
+* CSV export 📥
+> **Priority: Critical**
+
+### **3. Intelligent Chatbot** 🧠
+
+* Drug-interaction checks ⚠️
+* Doctors directory lookup
+* Team schedule display
+* Stock alerts
+> **Priority: High**
+
+### **4. Team Calendar** 🗓️
+
+* Shifts, absences, availability
+> **Priority: Medium**
+
+### **5. Client Information** 🧑
+
+* Basic client record
+* Notes & quick search
+> **Priority: Medium**
+
+### **6. Doctors Directory** 📇
+
+* Regional list
+* Filters & search
+> **Priority: Medium**
+
+---
+
+## **Project Scope** 🔭
+
+| **In-Scope** (✅) | **Out-of-Scope** (❌) |
 | :--- | :--- |
-| **MVP Goal** | Centralized Stock Management (CRUD) + Secure Authentication (JWT) + AI Chatbot Core. |
-| **Problem Solved** | Fragmentation of tools, resulting in time loss, stock errors, and lack of proactive critical alerts (e.g., drug interactions). |
-| **Core Value** | Proactivity and Centralization. The system alerts the team instead of waiting for passive consultations. |
-| **Target Audience** | Pharmacists and Pharmacy Technicians (2-8 employees). |
+| Responsive dashboard | Mobile native apps |
+| Stock tracking + alerts | Automatic supplier ordering |
+| Sales system + charts | Predictive analytics |
+| Rule-based chatbot | Generative AI chatbot |
+| Team calendar | Google Calendar sync |
+| Basic clients module | Advanced GDPR / external CRM |
+| Static doctors directory | Cloud-scale architecture |
+| Simple authentication | Full CI/CD pipeline |
+| Local/simple server deployment | |
+| Manual testing | |
 
 ---
 
-## 🛠️ Technical Stack
+## **Risks & Mitigation** 🚨
 
-This project is built using a robust Python-based stack.
-
-| Component | Technology | Role |
-| :--- | :--- | :--- |
-| **Backend Core** | Python 3.x, Flask | Core application framework. |
-| **API** | Flask-RESTx | RESTful API definition, automatic Swagger documentation, and validation. |
-| **Database** | SQLAlchemy (ORM), SQLite (MVP) | Object-Relational Mapping for structured data management. |
-| **Security** | Flask-JWT-Extended, Bcrypt | Token-based authentication, Role-Based Access Control (RBAC), and password hashing. |
-| **Frontend (MVP)** | HTML5, CSS3, Vanilla JavaScript | Responsive user interface. |
-| **AI/NLP** | NLTK / spaCy (Planned) | Basic Natural Language Processing for the Chatbot logic. |
+| Risk | Probability | Impact | Mitigation |
+| :--- | :--- | :--- | :--- |
+| Complex AI Chatbot | High | High | Rule-based system + light NLP 🤖 |
+| Data Quality | Medium | Critical | Reliable sources + manual validation 🛡️ |
+| Solo Workload | High | Medium | Strict MVP, weekly sprints 🏃 |
+| Integration Issues | Medium | Medium | Well-documented API, modular archi |
+| Performance | Low | Medium | Indexing, pagination, lazy loading |
+| Security | Medium | High | Password hashing, ORM validation, HTTPS 🔐 |
 
 ---
 
-## 💻 1. MVP Features (In Scope)
+## **3. Executive Summary** 👑
 
-The Minimum Viable Product focuses on delivering essential, secure functionality before expanding.
+### **Vision**
 
-| Priority | Feature | Description |
-| :--- | :--- | :--- |
-| **CRITICAL** | **Secure API** | Full CRUD operations on inventory (`/products`). All endpoints secured by JWT with Role/Ownership access control. |
-| **CRITICAL** | **Stock Management** | List, add, modify, delete medications, including low stock alert mechanisms. |
-| **CRITICAL** | **Authentication** | `POST /auth/login` to obtain JWT token. Access control based on user roles (`is_admin`). |
-| **HIGH** | **Intelligent Chatbot** | Core rules logic for checking drug interactions and retrieving quick info (calendar, stock). |
-| **MEDIUM** | **Sales Tracking** | Basic sales recording and simple visualization statistics (Top sellers, Revenue). |
-| **MEDIUM** | **Team Calendar** | Internal team scheduling and shift management. |
+A modern, centralized dashboard that simplifies pharmacy operations, enhances safety, and reduces errors through smart automation and AI assistance.
 
----
+### **Modules**
 
-## ⚙️ 2. Project Architecture & Setup
+1. Inventory with alerts 📦
+2. Sales tracking + visual stats 📈
+3. Multifunction AI chatbot 💬
+4. Team calendar 📅
+5. Client database 🗄️
+6. Doctors directory 🩺
 
-### 2.1. Project Structure
+### **Tech Stack**
 
-The structure follows the Flask convention for larger applications, utilizing the **Factory Pattern** (`create_app`) and **Separation of Concerns** (SoC).
+* Flask + SQLAlchemy 🐍
+* RESTX (Swagger)
+* HTML / CSS / JS
+* SQLite 💾
+* Chart.js
+* NLTK/ spaCy
 
-```
+### **Value Proposition**
 
-.
-├── Server/
-│   ├── api/
-│   │   ├── **init**.py
-│   │   ├── auth.py         \# Login, Register, Token Management
-│   │   └── products.py     \# CRUD operations for inventory (SECURED)
-│   ├── config.py           \# Configuration (Dev/Test/Prod)
-│   ├── database/
-│   │   └── initial\_inventory.csv \# Initial data for seeding
-│   ├── models/             \# SQLAlchemy ORM models (User, Product, Sale)
-│   ├── run.py              \# Application entry point (Starts server)
-│   ├── run\_seed.py         \# Database Seeding Logic (Admin, Products)
-│   ├── services/           \# Business Logic Layer
-│   │   └── facade.py       \# Facade/Service layer interaction
-│   └── app.py              \# Application Factory & Extension Initialization
-├── venv/
-└── README.md
+* Replaces 5+ existing tools
+* Smart proactive alerts 💡
+* Unique chatbot component
+* Lightweight, low-cost, accessible
+* Fast information access ⚡
 
-````
+### **Expected Impact** 📊
 
-### 2.2. Getting Started (Development)
+* **–30%** administrative time
+* **–50%** stock outages
+* Drug-interaction checks in **< 5 seconds**
+* **–40%** schedule conflicts
 
-1.  **Clone the repository:**
-    ```bash
-    git clone [YOUR_REPO_URL]
-    cd Dashboard-Pharma/Server
-    ```
+### **Timeline (8–10 Weeks)** ⏳
 
-2.  **Create a virtual environment (`venv`):**
-    ```bash
-    python3 -m venv venv
-    source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
-    ```
+* Weeks 1–2 → Architecture, DB, backend foundations
+* Weeks 3–4 → Inventory + sales modules
+* Weeks 5–6 → Chatbot
+* Weeks 7–8 → Frontend + calendar + directory
+* Weeks 9–10 → Testing, optimization, documentation
 
-3.  **Install dependencies:**
-    *(Assuming a `requirements.txt` is present)*
-    ```bash
-    pip install -r requirements.txt
-    ```
+### **Success Metrics** 💯
 
-4.  **Run the application:**
-    The `run.py` script will automatically create the database (`database.sqlite`), seed the initial `admin` user, and import products from the CSV file before starting the server.
-    ```bash
-    python3 run.py
-    ```
+* 100% MVP modules functional
+* Chatbot ≥ 80% relevant answers
+* Fully responsive UI
+* Loading time < 2s
+* ≥ 4/5 user satisfaction
 
-The API will be accessible at: **`http://127.0.0.1:5000/`**
-
----
-
-## 🔑 3. Authentication & Testing
-
-### Accessing Secured Routes
-
-All critical routes (e.g., `/products/`) require a valid JWT token.
-
-1.  **Login (Get Token):** Use the Swagger UI at `http://127.0.0.1:5000/` to send a `POST` request to **`/auth/login`** with the initial administrator credentials:
-    * **Username:** `admin`
-    * **Password:** `adminpass`
-
-2.  **Test Token Validity:** Use the retrieved `access_token` to test the **`/auth/me`** endpoint.
-
-3.  **Test Product API:** Use the `access_token` to access the secured **`/products/`** endpoints.
-
----
-
-## 🗺️ 4. Project Roadmap (Post-MVP)
-
-The following functionalities are planned for development after the MVP is stable:
-
-| Phase | Feature | Description |
-| :--- | :--- | :--- |
-| **Phase 2** | Full Sales Module | Implementation of the `SaleModel` for accurate transactional tracking and stock deduction. |
-| **Phase 2** | Advanced Reporting | Financial dashboards, historical sales trends, and stock forecasting. |
-| **Phase 3** | Advanced Chatbot | Integration of machine learning (ML) models for better NLP, advanced clinical decision support. |
-| **Phase 3** | External Integrations | Synchronization with external calendars (Google Calendar) or national drug databases. |
-
-
-````
