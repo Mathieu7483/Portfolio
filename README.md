@@ -1,8 +1,3 @@
-
-
------
-
-```markdown
 # 💊 Dashboard Pharma - The Intelligent Pharmacy Management System
 
 ## 🚀 Project Overview (MVP)
