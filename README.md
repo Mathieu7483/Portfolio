@@ -1,6 +1,6 @@
 # 💊 **Pharmacy Dashboard – MVP Documentation**
 
-#Part 1
+# Part 1
 ## **0. Team & Roles** 👥
 
 ### **Team Composition**
