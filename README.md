@@ -75,7 +75,6 @@
 
 ---
 
-# Part 2
 ## **2. MVP Definition** 🏗️
 
 ### **Problem** 📉
@@ -125,6 +124,7 @@ A unified, intelligent web dashboard providing:
 * Real-world relevance
 
 ---
+# Part 2
 
 ## **MVP SMART Objectives** 🚀
 
