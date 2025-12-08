@@ -1,5 +1,6 @@
 # 💊 **Pharmacy Dashboard – MVP Documentation**
 
+#Part 1
 ## **0. Team & Roles** 👥
 
 ### **Team Composition**
@@ -74,6 +75,7 @@
 
 ---
 
+# Part 2
 ## **2. MVP Definition** 🏗️
 
 ### **Problem** 📉
@@ -252,9 +254,9 @@ A modern, centralized dashboard that simplifies pharmacy operations, enhances sa
 
 * Weeks 1–2 → Architecture, DB, backend foundations
 * Weeks 3–4 → Inventory + sales modules
-* Weeks 5–6 → Chatbot
-* Weeks 7–8 → Frontend + calendar + directory
-* Weeks 9–10 → Testing, optimization, documentation
+* Weeks 5–6–7 → Chatbot
+* Weeks 8–9 → Frontend + calendar + directory
+* Weeks 10 → Testing, optimization, documentation
 
 ### **Success Metrics** 💯
 
