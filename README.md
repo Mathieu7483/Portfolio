@@ -1,6 +1,31 @@
+<p align="center"\>
+<img src="https://github.com/Mathieu7483/Dashboard-Pharma/blob/main/Client/assets/img/accueil%20Dasboard%20Pharma.png"/>
+</p\>
+
 # 💊 **Pharmacy Dashboard – MVP Documentation**
 
-# Part 1
+## **Table of Contents** 📑
+
+* **PART 1: Idea Development (Completed)**
+    * 0. Team & Roles 👥
+    * 1. Brainstorming & Idea Evaluation 💡
+* **PART 2: Project Planning (In Progress)**
+    * 2. MVP Definition 🏗️
+    * 3. Executive Summary 👑
+        * 3.1. Vision
+        * 3.2. Modules
+        * 3.3. Tech Stack
+        * 3.4. Value Proposition
+        * 3.5. Expected Impact
+        * 3.6. Timeline (5-Stage Curriculum Structure) 🗺️
+* **PART 3: Technical Documentation (To Come)** ⚪
+* **PART 4: MVP Development (To Come)** ⚪
+* **PART 5: Project Closure (To Come)** ⚪
+
+---
+
+# **PART 1: Idea Development (Completed)** ✅
+
 ## **0. Team & Roles** 👥
 
 ### **Team Composition**
@@ -28,7 +53,7 @@
 * **Versioning**: Git / GitHub 🐙
 * **Documentation**: README, notes 📝
 * **Project Management**: Trello 📋
-* **Quick Notes**: TODO.md 📌
+* **Quick Notes**: TODO.md, notes, post-it 📌
 
 ### **Decision Process**
 
@@ -75,6 +100,8 @@
 
 ---
 
+# **PART 2: Project Planning (In Progress)** ▶️
+
 ## **2. MVP Definition** 🏗️
 
 ### **Problem** 📉
@@ -103,7 +130,7 @@ A unified, intelligent web dashboard providing:
 * Pharmacists
 * Pharmacy assistants
 * Technicians
-> Âge: 25–60, basic to intermediate computer skills.
+> Age: 25–60, basic to intermediate computer skills.
 
 ### **Application Type** 🛠️
 
@@ -123,65 +150,24 @@ A unified, intelligent web dashboard providing:
 * Scalable architecture
 * Real-world relevance
 
----
-# Part 2
-
-## **MVP SMART Objectives** 🚀
+### **MVP SMART Objectives** 🚀
 
 | # | Objective | Description | Deadline |
 | :--- | :--- | :--- | :--- |
 | 1 | Inventory & Sales Module | CRUD + alerts | Weeks 1–3 |
-| 2 | Chatbot (4 query types) | Interactions, stock, directory, schedule | Weeks 4–6 |
+| 2 | Chatbot (4 query types) | Interactions, stock, directory, schedule | Weeks 4–7 |
 | 3 | Responsive Dashboard UI | Home + 5 modules | Weeks 2–7 |
 
----
+### **Key MVP Features** ⭐
 
-## **Key MVP Features** ⭐
+1.  **Inventory Management** 📦: CRUD, Stock tracking, Low-stock alerts 🔔
+2.  **Sales Tracking** 💰: Sales records, Statistics, Graphs via Chart.js, CSV export 📥
+3.  **Intelligent Chatbot** 🧠: Drug-interaction checks ⚠️, Stock alerts, Directory lookup
+4.  **Team Calendar** 🗓️: Shifts, absences, availability
+5.  **Client Information** 🧑: Basic client record, Notes & quick search
+6.  **Doctors Directory** 📇: Regional list, Filters & search
 
-### **1. Inventory Management** 📦
-
-* Medication CRUD
-* Stock tracking
-* Low-stock alerts 🔔
-* History
-> **Priority: Critical**
-
-### **2. Sales Tracking** 💰
-
-* Sales records
-* Statistics (top products, revenue)
-* Graphs via Chart.js
-* CSV export 📥
-> **Priority: Critical**
-
-### **3. Intelligent Chatbot** 🧠
-
-* Drug-interaction checks ⚠️
-* Doctors directory lookup
-* Team schedule display
-* Stock alerts
-> **Priority: High**
-
-### **4. Team Calendar** 🗓️
-
-* Shifts, absences, availability
-> **Priority: Medium**
-
-### **5. Client Information** 🧑
-
-* Basic client record
-* Notes & quick search
-> **Priority: Medium**
-
-### **6. Doctors Directory** 📇
-
-* Regional list
-* Filters & search
-> **Priority: Medium**
-
----
-
-## **Project Scope** 🔭
+### **Project Scope** 🔭
 
 | **In-Scope** (✅) | **Out-of-Scope** (❌) |
 | :--- | :--- |
@@ -196,9 +182,7 @@ A unified, intelligent web dashboard providing:
 | Local/simple server deployment | |
 | Manual testing | |
 
----
-
-## **Risks & Mitigation** 🚨
+### **Risks & Mitigation** 🚨
 
 | Risk | Probability | Impact | Mitigation |
 | :--- | :--- | :--- | :--- |
@@ -219,12 +203,12 @@ A modern, centralized dashboard that simplifies pharmacy operations, enhances sa
 
 ### **Modules**
 
-1. Inventory with alerts 📦
-2. Sales tracking + visual stats 📈
-3. Multifunction AI chatbot 💬
-4. Team calendar 📅
-5. Client database 🗄️
-6. Doctors directory 🩺
+1.  Inventory with alerts 📦
+2.  Sales tracking + visual stats 📈
+3.  Multifunction AI chatbot 💬
+4.  Team calendar 📅
+5.  Client database 🗄️
+6.  Doctors directory 🩺
 
 ### **Tech Stack**
 
@@ -250,19 +234,30 @@ A modern, centralized dashboard that simplifies pharmacy operations, enhances sa
 * Drug-interaction checks in **< 5 seconds**
 * **–40%** schedule conflicts
 
-### **Timeline (8–10 Weeks)** ⏳
+### **Timeline (5-Stage Curriculum Structure)** 🗺️
 
-* Weeks 1–2 → Architecture, DB, backend foundations
-* Weeks 3–4 → Inventory + sales modules
-* Weeks 5–6–7 → Chatbot
-* Weeks 8–9 → Frontend + calendar + directory
-* Weeks 10 → Testing, optimization, documentation
+We use this table to track project progress according to the curriculum's stages.
 
-### **Success Metrics** 💯
+| Stage | Estimated Period | Primary Objective | Key Deliverables | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| **Stage 1: Idea Development** | **Completed** | Define the need and the solution. | **MVP Documentation (Part 1)** | **✅ COMPLETED** |
+| **Stage 2: Project Planning** | **In Progress** | Define the structure, architecture, and data models. | **Detailed Timeline, DB/API Models** | **▶️ IN PROGRESS** |
+| **Stage 3: Technical Documentation** | Weeks 2–3 | Formalize the complete architecture, API, and technical specifications. | API Specifications (Swagger), Wireframes | ⚪ TO COME |
+| **Stage 4: MVP Development** | Weeks 4–10 | Build, test, and integrate key functionalities. | Functional Code (Backend/Frontend), Integration Tests | ⚪ TO COME |
+| **Stage 5: Project Closure** | Weeks 11–12 | Finalize, document, and present the project. | Final Report, Demo, Final Optimization | ⚪ TO COME |
 
-* 100% MVP modules functional
-* Chatbot ≥ 80% relevant answers
-* Fully responsive UI
-* Loading time < 2s
-* ≥ 4/5 user satisfaction
+---
+
+# **PART 3: Technical Documentation (To Come)** ⚪
+*(Future deliverables will be placed here: API Specifications, Wireframes, Technical Architecture Diagrams.)*
+
+---
+
+# **PART 4: MVP Development (To Come)** ⚪
+*(This section will document the construction progress, sprint reviews, and test results.)*
+
+---
+
+# **PART 5: Project Closure (To Come)** ⚪
+*(This section will include the Final Report, lessons learned, and future work recommendations.)*
 
