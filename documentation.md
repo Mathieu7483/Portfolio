@@ -1,29 +1,23 @@
-C'est une excellente idée pour finaliser votre Portfolio. Rassembler toutes les tâches dans un seul document `documentation.md` (ou `README.md`) permet de présenter un aperçu cohérent et complet de votre projet.
+# 📚 Technical Documentation: Pharma Dashboard API
 
-Voici la structure complète de votre documentation technique, compilant toutes les tâches finalisées (1, 2, 3, 4, 5, 6, 7).
-
------
-
-# 📚 Documentation Technique : Pharma Dashboard API
-
-Ce document présente l'architecture, la conception technique et les stratégies de développement du projet **Pharma Dashboard & Chatbot**.
+This document provides the architecture, technical design, and development strategies for the **Pharma Dashboard & Chatbot** project.
 
 ## 1\. Design System Architecture
 
-### 1.1 Diagramme d'Architecture de Haut Niveau
+### 1.1 High-Level Architecture Diagram
 
-L'application suit une architecture **Client-Serveur** à trois couches, mettant l'accent sur la séparation des préoccupations et une API RESTful robuste.
+The application follows a three-layered **Client-Server Architecture**, emphasizing Separation of Concerns and a robust RESTful API.
 
 ```mermaid
 graph TD
-    subgraph Client [Couche Présentation (Frontend Web)]
-        A[HTML/CSS/JavaScript] -- Requêtes REST (JSON) --> B(API Gateway/Router)
+    subgraph Client [Presentation Layer (Web Frontend)]
+        A[HTML/CSS/JavaScript] -- REST Requests (JSON) --> B(API Gateway/Router)
     end
 
-    subgraph Server [Couche Logique Applicative (Backend Python)]
-        B --> R{Routage des Requêtes}
+    subgraph Server [Application Logic Layer (Python Backend)]
+        B --> R{Request Routing}
 
-        subgraph Gestion API & Services (dossier api/)
+        subgraph API & Services Management (api/ folder)
             R --> P[API Products/Inventory]
             R --> S[API Sales/Transactions]
             R --> U[API Users/Auth]
@@ -33,7 +27,7 @@ graph TD
         
         S --> M(DashboardManager)
         
-        % Dépendances Logiques
+        % Logical Dependencies
         CB --> E[NLU Processor (SpaCy)]
         P --> F(DatabaseManager)
         S --> F
@@ -42,9 +36,9 @@ graph TD
         M --> F
     end
 
-    subgraph Persistence [Couche de Données]
+    subgraph Persistence [Data Layer]
         F --> H((SQLite Database))
-        E --> I[[Fichiers de Connaissances Médicaments]]
+        E --> I[[Drug Knowledge Files]]
     end
 ```
 
@@ -156,7 +150,7 @@ The API is structured by domain, matching the architecture established in Task 1
 
 ### 5.1 Source Code Management (SCM) Strategy
 
-The project uses **Git/GitHub** with a simplified branching model:
+The project uses **Git/GitHub** with a simplified three-branch model:
 
 | Branch Name | Purpose | Merge Target | Key Activities |
 | :--- | :--- | :--- | :--- |
@@ -172,7 +166,7 @@ The project uses **Git/GitHub** with a simplified branching model:
 | **Security Scanning** | Static Analysis | **Bandit** | Scanning for common security vulnerabilities. |
 | **Dynamic Testing** | Unit Tests | `unittest` (Python) | Verifying individual component isolation and correctness. |
 | **Dynamic Testing** | Integration Tests | `unittest` (Python) | Verifying component communication (API $\leftrightarrow$ Manager $\leftrightarrow$ DB). |
-| **Dynamic Testing** | End-to-End (E2E) Tests | Selenium/Cypress (If adopted) | Simulating complete user workflows (Login $\rightarrow$ Sale). |
+| **Dynamic Testing** | End-to-End (E2E) Tests | Selenium/Cypress (If adopted) | Simulating complete user workflows. |
 
 -----
 
@@ -180,18 +174,16 @@ The project uses **Git/GitHub** with a simplified branching model:
 
 ### 6.1 Tooling
 
-The standard migration tool **Alembic** (for SQLAlchemy) is used to manage database schema changes. This ensures that the application can evolve without losing critical data.
+The standard migration tool **Alembic** (for SQLAlchemy) is used to manage database schema changes.
 
 ### 6.2 Workflow
 
-1.  Update the ORM Models (e.g., add a column).
+1.  Update the ORM Models.
 2.  Use **Alembic** to **autogenerate** an `upgrade()` and `downgrade()` script.
-3.  Review the script to handle data consistency (e.g., provide default values).
-4.  Apply the migration (`alembic upgrade head`) first on the development/testing environment.
+3.  Review the script for data consistency.
+4.  Apply the migration (`alembic upgrade head`) on development/testing environments before deployment.
 
 ### 6.3 Initial Data Seeding
-
-Initial application data is managed separately:
 
   * **Core Data (Users):** Populated via initial ORM script after schema creation.
   * **Knowledge Base Data (NLP):** Stored in static, version-controlled files (`.csv`, `.json`) and loaded into memory by the `NLUProcessor` at runtime.
@@ -205,5 +197,5 @@ Initial application data is managed separately:
 | **Backend (Python)** | Chosen for its **simplicity, rapid development, and rich NLP ecosystem**, standardizing the language across the API and the Chatbot engine. | Seamless integration with **SpaCy** and data libraries. |
 | **Database (SQLite)** | Ideal for the MVP and single-server deployment, simplifying setup and configuration. | Reduces operational overhead; sufficient for initial data volume. |
 | **NLP Engine (SpaCy)** | Selected for its **production-readiness and performance** in Named Entity Recognition (NER) and tokenization. | Ensures fast and accurate processing of Chatbot queries. |
-| **Microservice-like API** | Organizes the API by domain (`/products`, `/users`, `/sales`), aligning with modern **microservices** principles. | Enhances **maintainability and readability**; facilitates future scaling/delegation. |
+| **Microservice-like API** | Organizes the API by domain, aligning with modern **microservices** principles. | Enhances **maintainability and readability**; facilitates future scaling/delegation. |
 | **ORM Usage** | Interacting with the database via Python objects rather than raw SQL. | Improves **developer productivity**, reduces risks of SQL injection, simplifies schema management. |
