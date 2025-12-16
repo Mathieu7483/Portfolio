@@ -1,6 +1,7 @@
 <p align="center"\>
 <img src="https://github.com/Mathieu7483/Portfolio/blob/main/assets/img/image%20dashboard%20documentation.png">
 </p\>
+
 # 📚 Technical Documentation: Pharma Dashboard API
 
 This document provides the architecture, technical design, and development strategies for the **Pharma Dashboard & Chatbot** project.
