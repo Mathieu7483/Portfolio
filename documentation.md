@@ -1,5 +1,5 @@
 <p align="center"\>
-<img src="https://github.com/Mathieu7483/Aiko78-Photgraphy/blob/main/img/a-highly-detailed--minimalist--and-abstract-repres%20(1).png"/>
+<img src="https://github.com/Mathieu7483/Portfolio/blob/main/assets/img/image%20dashboard%20documentation.png">
 </p\>
 # 📚 Technical Documentation: Pharma Dashboard API
 
