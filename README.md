@@ -249,7 +249,8 @@ We use this table to track project progress according to the curriculum's stages
 ---
 
 # **PART 3: Technical Documentation (To Come)** ⚪
-*(Future deliverables will be placed here: API Specifications, Wireframes, Technical Architecture Diagrams.)*
+## 📖 Technical Documentation
+For a detailed understanding of the system's architecture, design decisions, and development strategies, please refer to the complete technical documentation:
 
 [Link to documentation.md](https://github.com/Mathieu7483/Portfolio/blob/main/documentation.md)
 
