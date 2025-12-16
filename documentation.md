@@ -166,11 +166,11 @@ The project uses **Git/GitHub** with a simplified three-branch model:
 
 | Strategy | Type | Tool(s) | Goal |
 | :--- | :--- | :--- | :--- |
-| **Static Analysis** | Code Quality | **Flake8, Black** | Enforcing style, consistent formatting. |
+| **Static Analysis** | Code Quality | **Pycodestyle** | Enforcing style, consistent formatting. |
 | **Security Scanning** | Static Analysis | **Bandit** | Scanning for common security vulnerabilities. |
 | **Dynamic Testing** | Unit Tests | `unittest` (Python) | Verifying individual component isolation and correctness. |
 | **Dynamic Testing** | Integration Tests | `unittest` (Python) | Verifying component communication (API $\leftrightarrow$ Manager $\leftrightarrow$ DB). |
-| **Dynamic Testing** | End-to-End (E2E) Tests | Selenium/Cypress (If adopted) | Simulating complete user workflows. |
+| **Dynamic Testing** | End-to-End (E2E) Tests | livePreview on VS Code | Simulating complete user workflows. |
 
 -----
 
