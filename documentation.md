@@ -10,35 +10,35 @@ The application follows a three-layered **Client-Server Architecture**, emphasiz
 
 ```mermaid
 graph TD
-    subgraph Client [Presentation Layer (Web Frontend)]
-        A[HTML/CSS/JavaScript] -- REST Requests (JSON) --> B(API Gateway/Router)
+    subgraph Client["Presentation Layer (Web Frontend)"]
+        A["HTML/CSS/JavaScript"] -- REST Requests (JSON) --> B("API Gateway/Router")
     end
 
-    subgraph Server [Application Logic Layer (Python Backend)]
-        B --> R{Request Routing}
+    subgraph Server["Application Logic Layer (Python Backend)"]
+        B --> R{"Request Routing"}
 
-        subgraph API & Services Management (api/ folder)
-            R --> P[API Products/Inventory]
-            R --> S[API Sales/Transactions]
-            R --> U[API Users/Auth]
-            R --> CD[API Clients/Doctors]
-            R --> CB[Chatbot API]
+        subgraph API["API & Services Management (api/ folder)"]
+            R --> P["API Products/Inventory"]
+            R --> S["API Sales/Transactions"]
+            R --> U["API Users/Auth"]
+            R --> CD["API Clients/Doctors"]
+            R --> CB["Chatbot API"]
         end
         
-        S --> M(DashboardManager)
+        S --> M("DashboardManager")
         
-        % Logical Dependencies
-        CB --> E[NLU Processor (SpaCy)]
-        P --> F(DatabaseManager)
+        %% Logical Dependencies
+        CB --> E["NLU Processor (SpaCy)"]
+        P --> F("DatabaseManager")
         S --> F
         U --> F
         CD --> F
         M --> F
     end
 
-    subgraph Persistence [Data Layer]
-        F --> H((SQLite Database))
-        E --> I[[Drug Knowledge Files]]
+    subgraph Persistence["Data Layer"]
+        F --> H(("SQLite Database"))
+        E --> I[["Drug Knowledge Files"]]
     end
 ```
 
