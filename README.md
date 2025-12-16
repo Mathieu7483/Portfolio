@@ -251,6 +251,8 @@ We use this table to track project progress according to the curriculum's stages
 # **PART 3: Technical Documentation (To Come)** ⚪
 *(Future deliverables will be placed here: API Specifications, Wireframes, Technical Architecture Diagrams.)*
 
+[Link to documentation.md](https://github.com/Mathieu7483/Portfolio/blob/main/documentation.md)
+
 ---
 
 # **PART 4: MVP Development (To Come)** ⚪
