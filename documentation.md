@@ -1,3 +1,6 @@
+<p align="center"\>
+<img src="https://github.com/Mathieu7483/Aiko78-Photgraphy/blob/main/img/a-highly-detailed--minimalist--and-abstract-repres%20(1).png"/>
+</p\>
 # 📚 Technical Documentation: Pharma Dashboard API
 
 This document provides the architecture, technical design, and development strategies for the **Pharma Dashboard & Chatbot** project.
