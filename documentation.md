@@ -5,6 +5,11 @@
 # 📚 Technical Documentation: Pharma Dashboard API
 
 This document provides the architecture, technical design, and development strategies for the **Pharma Dashboard & Chatbot** project.
+## 0\. Mockups 
+<p align="center"\>
+<img src="https://github.com/Mathieu7483/Portfolio/blob/main/assets/img/Croquis%20du%20dashboard.jpg">
+</p\>
+
 
 ## 1\. Design System Architecture
 
