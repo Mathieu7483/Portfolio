@@ -82,6 +82,7 @@ This flow shows the sequence of operations required to calculate and display Key
 
 ```mermaid
 sequenceDiagram
+    autonumber
     participant C as Client (Browser)
     participant R as API Route /dashboard/kpis
     participant DM as DashboardManager
@@ -89,14 +90,26 @@ sequenceDiagram
     participant DB as SQLite DB
 
     C->>R: GET /dashboard/kpis (Auth Token)
-    R->>DM: calculate_all_kpis()
-    DM->>DBM: get_critical_stock()
-    DBM->>DB: SELECT * FROM products WHERE stock < threshold
-    DB-->>DBM: Result (Products)
-    DBM-->>DM: Critical Stock List
-    DM->>DM: Aggregate & Calculate KPIs
-    DM-->>R: Final KPIs JSON
-    R-->>C: 200 OK (KPI Data)
+    
+    alt Invalid or Expired Token
+        R-->>C: 401 Unauthorized
+    else Valid Token
+        R->>DM: calculate_all_kpis()
+        DM->>DBM: get_critical_stock()
+        
+        alt Database Connection Failure
+            DBM-->>DM: Raise DatabaseError
+            DM-->>R: Handle Exception
+            R-->>C: 500 Internal Server Error
+        else Success
+            DBM->>DB: SELECT * FROM products...
+            DB-->>DBM: Result (Recordset)
+            DBM-->>DM: Critical Stock List
+            DM->>DM: Aggregate & Calculate KPIs
+            DM-->>R: Final KPIs JSON
+            R-->>C: 200 OK (KPI Data)
+        end
+    end
 ```
 
 ### 3.2 Chatbot Query Flow
@@ -105,29 +118,59 @@ This flow illustrates the sequence of processing a user's natural language quest
 
 ```mermaid
 sequenceDiagram
+    autonumber
     participant C as Client (Chat Interface)
     participant R as API Route /chatbot/query
     participant CB as ChatBot_engine
     participant NLU as NLU Processor (SpaCy)
     participant DBM as DatabaseManager
-    participant DB as SQLite DB
 
     C->>R: POST /chatbot/query (Text Query)
     R->>CB: process_query(text)
     CB->>NLU: analyze(text)
-    NLU->>CB: Identified Intent & Entities (e.g., "Drug: Aspirin")
-    alt Knowledge Base Query
-        CB->>DBM: get_product_info("Aspirin")
-        DBM->>DB: SELECT details FROM products WHERE name="Aspirin"
-        DB-->>DBM: Product Data
-        DBM-->>CB: Product Information
-    else Database Query (e.g., Stock)
+    
+    alt Low Confidence / Intent Not Recognized
+        NLU-->>CB: Result: Intent None (Score < 0.6)
+        CB-->>R: Fallback Message ("Could you rephrase?")
+        R-->>C: 200 OK (Generic Response)
+    else Intent Recognized (e.g., "Check_Stock")
+        NLU-->>CB: Entities: {"product": "Aspirin"}
         CB->>DBM: get_product_stock("Aspirin")
-        % ... Database lookups ...
+        
+        alt Product Not Found
+            DBM-->>CB: Return None
+            CB-->>R: Error Message ("Product not in inventory")
+            R-->>C: 200 OK (Data Error Message)
+        else Product Found
+            DBM-->>CB: Stock Level Data
+            CB->>CB: Generate Natural Language Response
+            CB-->>R: Final Text Response
+            R-->>C: 200 OK (Success Message)
+        end
     end
-    CB->>CB: Generate Textual Response
-    CB-->>R: Response Text
-    R-->>C: 200 OK (Chat Response)
+```
+
+### 3.3 Authentication Flow (Security Best Practice)
+Since you are using Bandit and focusing on security, you should also master the login flow to prevent unauthorized access to your Python logic.
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant R as API Route /auth/login
+    participant DBM as DatabaseManager
+    participant DB as SQLite DB
+
+    U->>R: POST /login (username, password)
+    R->>DBM: get_user_by_username(username)
+    DBM->>DB: SELECT password_hash FROM users...
+    DB-->>DBM: User Record
+    
+    alt User Not Found OR Password Mismatch
+        DBM-->>R: Auth Failure
+        R-->>U: 401 Unauthorized (Invalid Credentials)
+    else Identity Verified
+        R->>R: Generate JWT / Session Token
+        R-->>U: 200 OK (Return Token)
+    end
 ```
 
 -----
