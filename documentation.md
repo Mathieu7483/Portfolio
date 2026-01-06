@@ -1,253 +1,153 @@
 <p align="center"\>
+
 <img src="https://github.com/Mathieu7483/Portfolio/blob/main/assets/img/image%20dashboard%20documentation.png">
-</p\>
+
+</p>
+
+
 
 # 📚 Technical Documentation: Pharma Dashboard API
 
+
+
 This document provides the architecture, technical design, and development strategies for the **Pharma Dashboard & Chatbot** project.
+
 ## 0\. Mockups 
+
 <p align="center"\>
+
 <img src="https://github.com/Mathieu7483/Portfolio/blob/main/assets/img/Croquis%20du%20dashboard.jpg">
-</p\>
 
+</p>
 
-## 1\. Design System Architecture
+## 1. Design System Architecture
 
-### 1.1 High-Level Architecture Diagram
+### 1.1 High-Level Architecture (Service-Oriented)
 
-The application follows a three-layered **Client-Server Architecture**, emphasizing Separation of Concerns and a robust RESTful API.
+The application now implements a **Facade Pattern** to decouple the API Layer from the Business Logic, facilitating modular maintenance of the Analytics and Chatbot engines.
 
 ```mermaid
 graph TD
-    subgraph Client["Presentation Layer (Web Frontend)"]
-        A["HTML/CSS/JavaScript"] -- REST Requests (JSON) --> B("API Gateway/Router")
+    subgraph Client_Side["Client Layer (Frontend)"]
+        UI["HTML/CSS/JS"] -- JSON/REST --> Router["App Entry (app.py)"]
     end
 
-    subgraph Server["Application Logic Layer (Python Backend)"]
-        B --> R{"Request Routing"}
-
-        subgraph API["API & Services Management (api/ folder)"]
-            R --> P["API Products/Inventory"]
-            R --> S["API Sales/Transactions"]
-            R --> U["API Users/Auth"]
-            R --> CD["API Clients/Doctors"]
-            R --> CB["Chatbot API"]
-        end
-        
-        S --> M("DashboardManager")
-        
-        %% Logical Dependencies
-        CB --> E["NLU Processor (SpaCy)"]
-        P --> F("DatabaseManager")
-        S --> F
-        U --> F
-        CD --> F
-        M --> F
+    subgraph API_Layer["API Layer (api/ folder)"]
+        Router --> BA["analytics.py"]
+        Router --> BC["chatbot.py"]
+        Router --> BS["sales.py"]
     end
 
-    subgraph Persistence["Data Layer"]
-        F --> H(("SQLite Database"))
-        E --> I[["Drug Knowledge Files"]]
+    subgraph Service_Layer["Service Layer (services/ folder)"]
+        BA & BC & BS --> F["facade.py (The Facade)"]
     end
+
+    subgraph Logic_Layer["Core & Data Layer"]
+        F --> CBE["ChatBot_engine.py"]
+        F --> DBM["data_manager.py"]
+        CBE --> NLU["NLUProcessor.py"]
+        DBM --> SQL[("SQLite DB")]
+    end
+
 ```
 
------
+---
 
-## 2\. Define Components, Classes, and Database Design
+## 2. Data & Component Design
 
-### 2.1 Final Class Diagram
+### 2.1 Entity-Relationship (ER) Summary
 
-This diagram outlines the core classes, highlighting inheritance (`BaseModel`, `PersonModel`), and the composition of the complex sale transaction.
+The schema is optimized for **Analytics** (tracking sales over time for chart generation).
 
-### 2.2 Entity-Relationship (ER) Model: Summary Table
+| Entity | Purpose | Key Attributes | Relationships |
+| --- | --- | --- | --- |
+| **USER** | Auth & Roles | `id`, `password_hash`, `is_admin` | 1:N with Sales |
+| **PRODUCT** | Inventory | `name`, `stock`, `price` | N:M via SALE_ITEM |
+| **SALE** | Transactions | `total_amount`, `sale_date` | 1:N with SALE_ITEM |
+| **SALE_ITEM** | Junction Table | `quantity`, `price_at_sale` | Links Sale & Product |
 
-The database schema is based on 6 core entities, ensuring data integrity for inventory, sales, and prescription tracking.
+---
 
-| Entity (Table) | Purpose | Key Attributes (Columns) | Relationships (Foreign Keys) |
-| :--- | :--- | :--- | :--- |
-| **USER** | Employee accounts and access control. | `id` (PK), `username`, `password_hash`, `is_admin` | **1:N with SALE, CLIENT, DOCTOR** |
-| **PRODUCT** | Inventory of drugs and products. | `id` (PK), `name`, `stock`, `price`, `active_ingredient` | **N:M with SALE** (via `SALE_ITEM`) |
-| **CLIENT** | Client records. | `id` (PK), `first_name`, `email`, `user_id` (FK) | **N:1 with USER**<br>**N:1 with SALE** |
-| **DOCTOR** | Physician records. | `id` (PK), `first_name`, `email`, `phone`, `specialty` | **N:1 with USER**<br>**N:1 with SALE** |
-| **SALE** | The overarching transaction (receipt). | `id` (PK), `total_amount`, `sale_date`, `user_id` (FK), `client_id` (FK), `doctor_id` (FK) | **1:N with SALE\_ITEM** |
-| **SALE\_ITEM** | **Junction Table** (Line item in a sale). | `sale_id` (FK), `product_id` (FK), `quantity`, `price_at_sale` | **N:1 with SALE**<br>**N:1 with PRODUCT** |
+## 3. Interaction and Flow Diagrams
 
------
+### 3.1 Analytics & Chart Generation Flow
 
-## 3\. Interaction and Flow Diagrams
-
-### 3.1 Dashboard Loading Flow (KPIs)
-
-This flow shows the sequence of operations required to calculate and display Key Performance Indicators (KPIs) on the dashboard.
+This flow describes how data is retrieved and formatted specifically for the frontend charts (e.g., sales trends).
 
 ```mermaid
 sequenceDiagram
     autonumber
-    participant C as Client (Browser)
-    participant R as API Route /dashboard/kpis
-    participant DM as DashboardManager
-    participant DBM as DatabaseManager
-    participant DB as SQLite DB
+    participant C as Client (dashboard.js)
+    participant A as API (analytics.py)
+    participant F as Facade (facade.py)
+    participant DM as DataManager
+    participant DB as SQLite
 
-    C->>R: GET /dashboard/kpis (Auth Token)
+    C->>A: GET /api/analytics/sales-trends
+    A->>F: get_sales_performance_data()
+    F->>DM: get_all_sales_with_dates()
+    DM->>DB: SELECT sale_date, total_amount FROM sales
+    DB-->>DM: Raw Rows
+    DM-->>F: List of Sale Objects
+    F->>F: Process Data (Group by Day/Month for Charts)
     
-    alt Invalid or Expired Token
-        R-->>C: 401 Unauthorized
-    else Valid Token
-        R->>DM: calculate_all_kpis()
-        DM->>DBM: get_critical_stock()
-        
-        alt Database Connection Failure
-            DBM-->>DM: Raise DatabaseError
-            DM-->>R: Handle Exception
-            R-->>C: 500 Internal Server Error
-        else Success
-            DBM->>DB: SELECT * FROM products...
-            DB-->>DBM: Result (Recordset)
-            DBM-->>DM: Critical Stock List
-            DM->>DM: Aggregate & Calculate KPIs
-            DM-->>R: Final KPIs JSON
-            R-->>C: 200 OK (KPI Data)
-        end
+    alt Data Processing Success
+        F-->>A: Formatted Chart JSON (Labels & Datasets)
+        A-->>C: 200 OK (Chart.js compatible data)
+    else DB Connection Error
+        F-->>A: Raise DatabaseError
+        A-->>C: 500 Internal Server Error
     end
+
 ```
 
-### 3.2 Chatbot Query Flow
+### 3.2 Chatbot Query Flow (Updated)
 
-This flow illustrates the sequence of processing a user's natural language question.
+The chatbot now communicates through the `facade.py` to remain consistent with the rest of the app.
 
 ```mermaid
 sequenceDiagram
     autonumber
-    participant C as Client (Chat Interface)
-    participant R as API Route /chatbot/query
-    participant CB as ChatBot_engine
-    participant NLU as NLU Processor (SpaCy)
-    participant DBM as DatabaseManager
-
-    C->>R: POST /chatbot/query (Text Query)
-    R->>CB: process_query(text)
-    CB->>NLU: analyze(text)
+    participant C as Client (chatbot.js)
+    participant A as API (chatbot.py)
+    participant F as Facade (facade.py)
+    participant CBE as ChatBotEngine
     
-    alt Low Confidence / Intent Not Recognized
-        NLU-->>CB: Result: Intent None (Score < 0.6)
-        CB-->>R: Fallback Message ("Could you rephrase?")
-        R-->>C: 200 OK (Generic Response)
-    else Intent Recognized (e.g., "Check_Stock")
-        NLU-->>CB: Entities: {"product": "Aspirin"}
-        CB->>DBM: get_product_stock("Aspirin")
-        
-        alt Product Not Found
-            DBM-->>CB: Return None
-            CB-->>R: Error Message ("Product not in inventory")
-            R-->>C: 200 OK (Data Error Message)
-        else Product Found
-            DBM-->>CB: Stock Level Data
-            CB->>CB: Generate Natural Language Response
-            CB-->>R: Final Text Response
-            R-->>C: 200 OK (Success Message)
-        end
-    end
+    C->>A: POST /api/chatbot/query (text)
+    A->>F: handle_chat_query(text)
+    F->>CBE: get_response(text)
+    Note right of CBE: NLU Analysis & DB Lookup via Facade
+    CBE-->>F: Response String
+    F-->>A: JSON Response
+    A-->>C: 200 OK
+
 ```
 
-### 3.3 Authentication Flow (Security Best Practice)
-Since you are using Bandit and focusing on security, you should also master the login flow to prevent unauthorized access to your Python logic.
-```mermaid
-sequenceDiagram
-    participant U as User
-    participant R as API Route /auth/login
-    participant DBM as DatabaseManager
-    participant DB as SQLite DB
+---
 
-    U->>R: POST /login (username, password)
-    R->>DBM: get_user_by_username(username)
-    DBM->>DB: SELECT password_hash FROM users...
-    DB-->>DBM: User Record
-    
-    alt User Not Found OR Password Mismatch
-        DBM-->>R: Auth Failure
-        R-->>U: 401 Unauthorized (Invalid Credentials)
-    else Identity Verified
-        R->>R: Generate JWT / Session Token
-        R-->>U: 200 OK (Return Token)
-    end
-```
+## 4. API Endpoints (Internal)
 
------
+| Endpoint | File | Purpose | Logic Owner |
+| --- | --- | --- | --- |
+| `POST /api/auth/login` | `auth.py` | User login & JWT | `facade.py` |
+| `GET /api/analytics/kpis` | `analytics.py` | Top dashboard cards | `facade.py` |
+| `GET /api/analytics/charts` | `analytics.py` | **Data for GraphJS/ApexCharts** | `facade.py` |
+| `POST /api/chatbot/query` | `chatbot.py` | Natural Language processing | `ChatBot_engine.py` |
 
-## 4\. Document External and Internal APIs
+---
 
-### 4.1 External API Documentation
+## 5. QA & Deployment Strategies
 
-**Conclusion:** **No external APIs** are used. All drug information and business logic are contained within the system.
+* **Security Scanning:** **Bandit** is used to scan the `Server/` directory for vulnerabilities (SQL injection, hardcoded secrets).
+* **Data Seeding:** The `utils/seeder.py` script populates the database from `initial_inventory.csv` and `data_seed.json` for testing environments.
+* **Static Analysis:** `Pycodestyle` ensures PEP 8 compliance across all modules.
 
-### 4.2 Internal API Documentation (RESTful Endpoints)
+---
 
-The API is structured by domain, matching the architecture established in Task 1.
+## 6. Technical Justifications
 
-| Endpoint Group | Route | Purpose | Key Operations (CRUD) | Access Restrictions |
-| :--- | :--- | :--- | :--- | :--- |
-| **`auth`** | `/auth/*` | User authentication and token management. | Login, Register, Token Refresh | None (for Login/Register) |
-| **`products`** | `/products/*` | Product inventory operations. | View (R), **Create, Update, Delete (CUD)**, Search | **Admin Required for CUD** |
-| **`sales`** | `/sales/*` | Management of sales transactions. | View (R), Create (C), **Delete (D)** | **Admin Required for Delete** |
-| **`users`** | `/users/*` | Employee account management. | View (R), **Create, Update, Delete (CUD)** | **Admin Required for all CUD** |
-| **`clients`** | `/clients/*` | Client record management. | View, Create, Update, Delete, Search | Authenticated Role-Based |
-| **`doctors`** | `/doctors/*` | Physician record management. | View, Create, Update, Delete, Search | Authenticated Role-Based |
-| **`chatbot`** | `/chatbot/*` | Interface to the NLU engine. | **POST /chatbot/query** | Authenticated User |
-| **`dashboard`** | `/dashboard/*` | Consolidated data display (KPIs). | **GET /dashboard/kpis** | Authenticated User |
+* **Facade Pattern:** By using `facade.py` in the `services/` folder, we create a single entry point for all business logic. This makes the `api/` routes extremely thin and easy to test.
+* **Separated Models:** Each entity (`product.py`, `sale.py`) has its own file in `models/`, allowing for specialized methods (e.g., a `Product` object knowing how to check its own stock levels).
+* **Analytics Module:** Dedicated analytics routes allow for heavy data processing (aggregations, time-series formatting) to happen on the server, sending only the "ready-to-plot" JSON to the client.
 
------
-
-## 5\. Plan SCM and QA Strategies
-
-### 5.1 Source Code Management (SCM) Strategy
-
-The project uses **Git/GitHub** with a simplified three-branch model:
-
-| Branch Name | Purpose | Merge Target | Key Activities |
-| :--- | :--- | :--- | :--- |
-| `main` | Production-ready, stable code. | Protected | Receives merges from `develop` only. |
-| `develop` | Integration branch for all features. | `main` | Continuous Integration (CI) builds, QA testing. |
-| `mathieu` | Primary Feature Development branch. | `develop` | All core development and unit testing. |
-
-### 5.2 Quality Assurance (QA) Strategy
-
-| Strategy | Type | Tool(s) | Goal |
-| :--- | :--- | :--- | :--- |
-| **Static Analysis** | Code Quality | **Pycodestyle** | Enforcing style, consistent formatting. |
-| **Security Scanning** | Static Analysis | **Bandit** | Scanning for common security vulnerabilities. |
-| **Dynamic Testing** | Unit Tests | `unittest` (Python) | Verifying individual component isolation and correctness. |
-| **Dynamic Testing** | Integration Tests | `unittest` (Python) | Verifying component communication (API $\leftrightarrow$ Manager $\leftrightarrow$ DB). |
-| **Dynamic Testing** | End-to-End (E2E) Tests | livePreview on VS Code | Simulating complete user workflows. |
-
------
-
-## 6\. Define Data Migration Strategy
-
-### 6.1 Tooling
-
-The standard migration tool **Alembic** (for SQLAlchemy) is used to manage database schema changes.
-
-### 6.2 Workflow
-
-1.  Update the ORM Models.
-2.  Use **Alembic** to **autogenerate** an `upgrade()` and `downgrade()` script.
-3.  Review the script for data consistency.
-4.  Apply the migration (`alembic upgrade head`) on development/testing environments before deployment.
-
-### 6.3 Initial Data Seeding
-
-  * **Core Data (Users):** Populated via initial ORM script after schema creation.
-  * **Knowledge Base Data (NLP):** Stored in static, version-controlled files (`.csv`, `.json`) and loaded into memory by the `NLUProcessor` at runtime.
-
------
-
-## 7\. Technical Justifications
-
-| Component / Decision | Rationale and Justification | Technical Advantage |
-| :--- | :--- | :--- |
-| **Backend (Python)** | Chosen for its **simplicity, rapid development, and rich NLP ecosystem**, standardizing the language across the API and the Chatbot engine. | Seamless integration with **SpaCy** and data libraries. |
-| **Database (SQLite)** | Ideal for the MVP and single-server deployment, simplifying setup and configuration. | Reduces operational overhead; sufficient for initial data volume. |
-| **NLP Engine (SpaCy)** | Selected for its **production-readiness and performance** in Named Entity Recognition (NER) and tokenization. | Ensures fast and accurate processing of Chatbot queries. |
-| **Microservice-like API** | Organizes the API by domain, aligning with modern **microservices** principles. | Enhances **maintainability and readability**; facilitates future scaling/delegation. |
-| **ORM Usage** | Interacting with the database via Python objects rather than raw SQL. | Improves **developer productivity**, reduces risks of SQL injection, simplifies schema management. |
+---
