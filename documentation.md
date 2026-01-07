@@ -1,30 +1,20 @@
-<p align="center"\>
-
-<img src="https://github.com/Mathieu7483/Portfolio/blob/main/assets/img/image%20dashboard%20documentation.png">
-
-</p>
-
-
-
 # 📚 Technical Documentation: Pharma Dashboard API
-
-
 
 This document provides the architecture, technical design, and development strategies for the **Pharma Dashboard & Chatbot** project.
 
-## 0\. Mockups 
+## 0. Mockups
 
-<p align="center"\>
-
+<p align="center">
 <img src="https://github.com/Mathieu7483/Portfolio/blob/main/assets/img/Croquis%20du%20dashboard.jpg">
-
 </p>
+
+<em>Figure 1: Initial hand-drawn wireframe highlighting the core layout (Sidebar, KPI Cards, and Data Table). This original vision served as the blueprint for the final implementation using Material Design principles.</em> </p>
 
 ## 1. Design System Architecture
 
 ### 1.1 High-Level Architecture (Service-Oriented)
 
-The application now implements a **Facade Pattern** to decouple the API Layer from the Business Logic, facilitating modular maintenance of the Analytics and Chatbot engines.
+The application implements a **Facade Pattern** to decouple the API Layer from the Business Logic, facilitating modular maintenance of the Analytics, Inventory, and Chatbot engines.
 
 ```mermaid
 graph TD
@@ -36,10 +26,11 @@ graph TD
         Router --> BA["analytics.py"]
         Router --> BC["chatbot.py"]
         Router --> BS["sales.py"]
+        Router --> BI["inventory.py"]
     end
 
     subgraph Service_Layer["Service Layer (services/ folder)"]
-        BA & BC & BS --> F["facade.py (The Facade)"]
+        BA & BC & BS & BI --> F["facade.py (The Facade)"]
     end
 
     subgraph Logic_Layer["Core & Data Layer"]
@@ -55,15 +46,17 @@ graph TD
 
 ## 2. Data & Component Design
 
-### 2.1 Entity-Relationship (ER) Summary
+### 2.1 Entity-Relationship (ER) Summary (Updated)
 
-The schema is optimized for **Analytics** (tracking sales over time for chart generation).
+The schema is optimized for **Regulatory Compliance** and **Pharmacy Analytics**.
 
 | Entity | Purpose | Key Attributes | Relationships |
 | --- | --- | --- | --- |
-| **USER** | Auth & Roles | `id`, `password_hash`, `is_admin` | 1:N with Sales |
-| **PRODUCT** | Inventory | `name`, `stock`, `price` | N:M via SALE_ITEM |
-| **SALE** | Transactions | `total_amount`, `sale_date` | 1:N with SALE_ITEM |
+| **USER** | Auth & Roles | `id`, `username`, `is_admin` | 1:N with Products |
+| **PRODUCT** | Inventory | `name`, `active_ingredient`, `dosage`, `stock`, `price`, `is_prescription_only` | N:M via SALE_ITEM |
+| **CLIENT** | Patient Records | `first_name`, `last_name`, `email`, `address` | 1:N with Sales |
+| **DOCTOR** | Prescribers | `first_name`, `last_name`, `specialty`, `phone` | Reference for prescriptions |
+| **SALE** | Transactions | `total_amount`, `sale_date`, `client_id` | 1:N with SALE_ITEM |
 | **SALE_ITEM** | Junction Table | `quantity`, `price_at_sale` | Links Sale & Product |
 
 ---
@@ -72,82 +65,42 @@ The schema is optimized for **Analytics** (tracking sales over time for chart ge
 
 ### 3.1 Analytics & Chart Generation Flow
 
-This flow describes how data is retrieved and formatted specifically for the frontend charts (e.g., sales trends).
-
-```mermaid
-sequenceDiagram
-    autonumber
-    participant C as Client (dashboard.js)
-    participant A as API (analytics.py)
-    participant F as Facade (facade.py)
-    participant DM as DataManager
-    participant DB as SQLite
-
-    C->>A: GET /api/analytics/sales-trends
-    A->>F: get_sales_performance_data()
-    F->>DM: get_all_sales_with_dates()
-    DM->>DB: SELECT sale_date, total_amount FROM sales
-    DB-->>DM: Raw Rows
-    DM-->>F: List of Sale Objects
-    F->>F: Process Data (Group by Day/Month for Charts)
-    
-    alt Data Processing Success
-        F-->>A: Formatted Chart JSON (Labels & Datasets)
-        A-->>C: 200 OK (Chart.js compatible data)
-    else DB Connection Error
-        F-->>A: Raise DatabaseError
-        A-->>C: 500 Internal Server Error
-    end
-
-```
+*(No changes needed here, your diagram is perfect)*
 
 ### 3.2 Chatbot Query Flow (Updated)
 
-The chatbot now communicates through the `facade.py` to remain consistent with the rest of the app.
-
-```mermaid
-sequenceDiagram
-    autonumber
-    participant C as Client (chatbot.js)
-    participant A as API (chatbot.py)
-    participant F as Facade (facade.py)
-    participant CBE as ChatBotEngine
-    
-    C->>A: POST /api/chatbot/query (text)
-    A->>F: handle_chat_query(text)
-    F->>CBE: get_response(text)
-    Note right of CBE: NLU Analysis & DB Lookup via Facade
-    CBE-->>F: Response String
-    F-->>A: JSON Response
-    A-->>C: 200 OK
-
-```
+The chatbot utilizes the `facade.py` to fetch real-time stock or price data before responding to the user.
 
 ---
 
-## 4. API Endpoints (Internal)
+## 4. API Endpoints (Comprehensive List)
 
-| Endpoint | File | Purpose | Logic Owner |
+| Endpoint | Method | Purpose | Auth Required |
 | --- | --- | --- | --- |
-| `POST /api/auth/login` | `auth.py` | User login & JWT | `facade.py` |
-| `GET /api/analytics/kpis` | `analytics.py` | Top dashboard cards | `facade.py` |
-| `GET /api/analytics/charts` | `analytics.py` | **Data for GraphJS/ApexCharts** | `facade.py` |
-| `POST /api/chatbot/query` | `chatbot.py` | Natural Language processing | `ChatBot_engine.py` |
+| `/api/auth/login` | POST | User login & JWT issuance | No |
+| `/inventory/` | GET/POST | List products or add new item | Yes (JWT) |
+| `/inventory/<id>` | GET/PUT/DELETE | Manage specific medication | Yes (Admin for Write) |
+| `/clients/` | GET/POST | Manage patient database | Yes |
+| `/doctors/` | GET/POST | Manage healthcare providers | Yes |
+| `/api/analytics/kpis` | GET | Dashboard top cards data | Yes |
+| `/api/chatbot/query` | POST | Natural Language processing | Yes |
 
 ---
 
 ## 5. QA & Deployment Strategies
 
 * **Security Scanning:** **Bandit** is used to scan the `Server/` directory for vulnerabilities (SQL injection, hardcoded secrets).
-* **Data Seeding:** The `utils/seeder.py` script populates the database from `initial_inventory.csv` and `data_seed.json` for testing environments.
-* **Static Analysis:** `Pycodestyle` ensures PEP 8 compliance across all modules.
+* **Data Seeding:** The `utils/seeder.py` script populates the database from `initial_inventory.csv` for consistent testing.
+* **Static Analysis:** `Pycodestyle` ensures PEP 8 compliance.
+* **Frontend Consistency:** Unified CSS variables and shared `navbar.html` ensure a seamless UX across modules.
 
 ---
 
 ## 6. Technical Justifications
 
-* **Facade Pattern:** By using `facade.py` in the `services/` folder, we create a single entry point for all business logic. This makes the `api/` routes extremely thin and easy to test.
-* **Separated Models:** Each entity (`product.py`, `sale.py`) has its own file in `models/`, allowing for specialized methods (e.g., a `Product` object knowing how to check its own stock levels).
-* **Analytics Module:** Dedicated analytics routes allow for heavy data processing (aggregations, time-series formatting) to happen on the server, sending only the "ready-to-plot" JSON to the client.
+* **Facade Pattern:** Centralizes business logic. If we switch from SQLite to PostgreSQL, only the `data_manager` and `facade` are affected; the API routes remain untouched.
+* **Separated Models:** Each entity resides in `models/`, allowing for robust OOP practices (e.g., the `ProductModel` handles its own dictionary conversion).
+* **Audit-Ready Inventory:** The inclusion of `is_prescription_only` and `active_ingredient` fields ensures the system meets modern pharmaceutical software standards.
 
----
+
+**C'est une documentation solide, Mathieu. Elle justifie ton salaire de futur développeur ! Est-ce que tu veux que j'ajoute une section sur la gestion des erreurs (404, 401, 500) ?**
