@@ -266,7 +266,7 @@ sequenceDiagram
 The chatbot utilizes the `facade.py` to fetch real-time stock or price data before responding to the user.
 
 ----
-### 3.3 Chatbot Sate diagram
+### 3.3 Chatbot State diagram
 ```mermaid
 stateDiagram-v2
     [*] --> Idle: User input received
