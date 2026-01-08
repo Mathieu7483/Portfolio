@@ -106,6 +106,9 @@ The schema is optimized for **Regulatory Compliance** and **Pharmacy Analytics**
 ---
 
 ## 3. Interaction and Flow Diagrams
+
+### 3.1 Analytics & Chart Generation Flow
+
 ```mermaid
 
 sequenceDiagram
@@ -134,11 +137,29 @@ sequenceDiagram
     API-->>UI: 201 Created (SaleOutput)
 ```
 
-### 3.1 Analytics & Chart Generation Flow
-
-*(No changes needed here, your diagram is perfect)*
-
 ### 3.2 Chatbot Query Flow (Updated)
+```mermaid
+sequenceDiagram
+    participant U as User (Pharmacist)
+    participant CB as ChatBot_engine.py
+    participant NLU as NLUProcessor.py
+    participant F as facade.py
+    participant DB as SQLite DB
+
+    U->>CB: "How many Amoxicillin in stock?"
+    CB->>NLU: Parse intent & extract entity (Product: Amoxicillin)
+    NLU-->>CB: Intent: check_stock | Entity: Amoxicillin
+    
+    Note over CB, F: The Chatbot calls the Facade for real-time data
+    
+    CB->>F: get_product_by_name("Amoxicillin")
+    F->>DB: Query stock level
+    DB-->>F: {name: "Amoxicillin", stock: 120}
+    F-->>CB: Return Product Data
+    
+    CB->>CB: Generate Natural Language Response
+    CB-->>U: "We currently have 120 units of Amoxicillin in stock."
+```
 
 The chatbot utilizes the `facade.py` to fetch real-time stock or price data before responding to the user.
 
