@@ -13,7 +13,7 @@ This document provides the architecture, technical design, and development strat
 | **Pharmacist** | As a user, I want to register a new doctor or client on the fly. | To complete a sale requiring a prescription without delay. | **Must** |
 | **Admin** | As an administrator, I want to manage employee accounts and roles. | To secure access to sensitive pharmaceutical data. | **High** |
 | **Admin** | As an administrator, I want to revert a sale and restore stock. | To correct human errors in inventory management. | **High** |
-| **Staff** | As a user, I want to ask the "Caducée" AI about inventory, clients, Doctors status, and more (planning, notificatations etc...). | To get hands-free, real-time data while assisting clients. | **Medium** |
+| **Staff** | As a user, I want to ask the "Caducée" AI about inventory, clients, Doctors status, and more (plannings, notifications etc...). | To get hands-free, real-time data while assisting clients. | **Medium** |
 
 
 ## 0. Mockups
