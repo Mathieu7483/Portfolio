@@ -216,8 +216,8 @@ A modern, centralized dashboard that simplifies pharmacy operations, enhances sa
 * RESTX (Swagger)
 * HTML / CSS / JS
 * SQLite 💾
-* Chart.js
-* NLTK/ spaCy
+* Chart.js (for graphics)
+* spaCy (for ChatBot Caducée)
 
 ### **Value Proposition**
 
@@ -241,14 +241,14 @@ We use this table to track project progress according to the curriculum's stages
 | Stage | Estimated Period | Primary Objective | Key Deliverables | Status |
 | :--- | :--- | :--- | :--- | :--- |
 | **Stage 1: Idea Development** | **Completed** | Define the need and the solution. | **MVP Documentation (Part 1)** | **✅ COMPLETED** |
-| **Stage 2: Project Planning** | **In Progress** | Define the structure, architecture, and data models. | **Detailed Timeline, DB/API Models** | **▶️ IN PROGRESS** |
-| **Stage 3: Technical Documentation** | Weeks 2–3 | Formalize the complete architecture, API, and technical specifications. | API Specifications (Swagger), Wireframes | ⚪ TO COME |
+| **Stage 2: Project Planning** | **Completed** | Define the structure, architecture, and data models. | **Detailed Timeline, DB/API Models** | **✅ COMPLETED** |
+| **Stage 3: Technical Documentation** | Weeks 2–3 | Formalize the complete architecture, API, and technical specifications. | API Specifications (Swagger), Wireframes | **▶️ IN PROGRESS** |
 | **Stage 4: MVP Development** | Weeks 4–10 | Build, test, and integrate key functionalities. | Functional Code (Backend/Frontend), Integration Tests | ⚪ TO COME |
 | **Stage 5: Project Closure** | Weeks 11–12 | Finalize, document, and present the project. | Final Report, Demo, Final Optimization | ⚪ TO COME |
 
 ---
 
-# **PART 3: Technical Documentation (To Come)** ⚪
+# **PART 3: Technical Documentation ▶️ IN PROGRESS** 
 ## 📖 Technical Documentation
 For a detailed understanding of the system's architecture, design decisions, and development strategies, please refer to the complete technical documentation:
 
