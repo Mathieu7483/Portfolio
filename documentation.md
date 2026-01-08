@@ -190,24 +190,30 @@ The schema is optimized for **Regulatory Compliance** and **Pharmacy Analytics**
 ```mermaid
 sequenceDiagram
     participant UI as Frontend (JS)
-    participant API as API Layer (Clients/Docs)
+    participant API as API Layer (Clients)
     participant F as FacadeService
     participant DB as SQLite (Models)
 
     Note over UI, API: User fills the form & clicks 'Create'
-    UI->>API: POST /clients/ or /doctors/ (JSON + JWT)
+    UI->>API: POST /clients/ (JSON + JWT)
     
-    API->>API: Authenticate User (JWT Required)
-    
-    API->>F: create_entity(data)
-    
-    F->>F: Validate Business Rules (e.g. Unique License No)
-    
-    F->>DB: Instantiate Model & Save to DB
-    DB-->>F: Success (Object ID generated)
-    
-    F-->>API: New Entity Object
-    API-->>UI: 201 Created (Success Message)
+    alt JWT Missing or Invalid
+        API-->>UI: 401 Unauthorized
+    else JWT Valid
+        API->>API: Extract current_user_id
+        
+        API->>F: create_client(data, user_id)
+        
+        alt Validation Failed (Email exists / Invalid data)
+            F-->>API: returns None
+            API-->>UI: 400 Bad Request ("Client registration failed")
+        else Validation Success
+            F->>DB: Instantiate Client & save_to_db()
+            DB-->>F: Success (True)
+            F-->>API: returns New Client Object
+            API-->>UI: 201 Created (Success Message + Data)
+        end
+    end
 ```
 #### 3.1.2 Sequences diagram for Create a sale (relation with client, and products)
 
