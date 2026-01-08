@@ -18,27 +18,41 @@ The application implements a **Facade Pattern** to decouple the API Layer from t
 
 ```mermaid
 graph TD
-    subgraph Client_Side["Client Layer (Frontend)"]
-        UI["HTML/CSS/JS"] -- JSON/REST --> Router["App Entry (app.py)"]
+    subgraph Client_Layer["Client Side (Frontend)"]
+        UI["HTML (index, auth, doctors...)"]
+        JS["JS (dashboard, auth, doctors...)"]
+        UI --- JS
     end
 
-    subgraph API_Layer["API Layer (api/ folder)"]
-        Router --> BA["analytics.py"]
-        Router --> BC["chatbot.py"]
-        Router --> BS["sales.py"]
-        Router --> BI["inventory.py"]
+    subgraph API_Layer["Server: API Layer (api/ folder)"]
+        Router["app.py (Flask/FastAPI)"]
+        Router --> A_AUTH["auth.py"]
+        Router --> A_CLI["clients.py"]
+        Router --> A_DOC["doctors.py"]
+        Router --> A_INV["inventory.py"]
+        Router --> A_CB["chatbot.py"]
     end
 
-    subgraph Service_Layer["Service Layer (services/ folder)"]
-        BA & BC & BS & BI --> F["facade.py (The Facade)"]
+    subgraph Service_Layer["Server: Service Layer"]
+        A_AUTH & A_CLI & A_DOC & A_INV & A_CB --> F["facade.py"]
     end
 
-    subgraph Logic_Layer["Core & Data Layer"]
+    subgraph Model_Layer["Server: Models Layer (models/ folder)"]
+        F --> BM["basemodel.py"]
+        BM --> M_USR["user.py"]
+        BM --> M_CLI["client.py"]
+        BM --> M_DOC["doctor.py"]
+        BM --> M_PRO["product.py"]
+    end
+
+    subgraph Logic_Data_Layer["Server: Core & Database"]
         F --> CBE["ChatBot_engine.py"]
-        F --> DBM["data_manager.py"]
         CBE --> NLU["NLUProcessor.py"]
-        DBM --> SQL[("SQLite DB")]
+        F --> DBM["data_manager.py"]
+        DBM --> DB[("SQLite DB")]
     end
+
+    JS -- "REST/JSON" --> Router
 
 ```
 
@@ -50,14 +64,23 @@ graph TD
 
 The schema is optimized for **Regulatory Compliance** and **Pharmacy Analytics**.
 
-| Entity | Purpose | Key Attributes | Relationships |
-| --- | --- | --- | --- |
-| **USER** | Auth & Roles | `id`, `username`, `is_admin` | 1:N with Products |
-| **PRODUCT** | Inventory | `name`, `active_ingredient`, `dosage`, `stock`, `price`, `is_prescription_only` | N:M via SALE_ITEM |
-| **CLIENT** | Patient Records | `first_name`, `last_name`, `email`, `address` | 1:N with Sales |
-| **DOCTOR** | Prescribers | `first_name`, `last_name`, `specialty`, `phone` | Reference for prescriptions |
-| **SALE** | Transactions | `total_amount`, `sale_date`, `client_id` | 1:N with SALE_ITEM |
-| **SALE_ITEM** | Junction Table | `quantity`, `price_at_sale` | Links Sale & Product |
+### 📊 Entity Details & Key Attributes
+
+| Entity | Model File | Key Attributes (SQLAlchemy) | Purpose |
+| :--- | :--- | :--- | :--- |
+| **Product** | \`product.py\` | \`active_ingredient\`, \`dosage\`, \`stock\`, \`price\`, \`is_prescription_only\` | Pharmaceutical inventory management. |
+| **Sale** | \`sale.py\` | \`total_amount\`, \`sale_date\`, \`prescription_provided\` | Main transaction record (The Receipt). |
+| **SaleItem** | \`sale.py\` | \`quantity\`, \`price_at_sale\` | Junction table for Many-to-Many (Sale <-> Product). |
+| **User** | \`user.py\` | \`username\`, \`password_hash\`, \`role\` | Auth & Ownership (\`user_id\` in Products/Sales). |
+| **Doctor** | \`doctor.py\` | \`first_name\`, \`specialty\`, \`license_no\` | Regulatory reference for prescriptions. |
+| **Client** | \`client.py\` | \`first_name\`, \`last_name\`, \`email\` | Patient tracking for medication history. |
+
+### 🔗 Logic & Relationships
+
+1. **Many-to-Many**: \`SaleModel\` and \`ProductModel\` are linked via \`SaleItemModel\`.
+2. **Regulatory Link**: \`SaleModel\` includes \`doctor_id\` and \`prescription_provided\` to validate the sale of products where \`is_prescription_only=True\`.
+3. **Ownership**: Every product is linked to a \`user_id\` (the person who added it to the inventory).
+4. **Data Integrity**: \`SaleItemModel\` stores \`price_at_sale\` to preserve historical data even if the product price changes later.
 
 ---
 
@@ -75,15 +98,24 @@ The chatbot utilizes the `facade.py` to fetch real-time stock or price data befo
 
 ## 4. API Endpoints (Comprehensive List)
 
-| Endpoint | Method | Purpose | Auth Required |
-| --- | --- | --- | --- |
-| `/api/auth/login` | POST | User login & JWT issuance | No |
-| `/inventory/` | GET/POST | List products or add new item | Yes (JWT) |
-| `/inventory/<id>` | GET/PUT/DELETE | Manage specific medication | Yes (Admin for Write) |
-| `/clients/` | GET/POST | Manage patient database | Yes |
-| `/doctors/` | GET/POST | Manage healthcare providers | Yes |
-| `/api/analytics/kpis` | GET | Dashboard top cards data | Yes |
-| `/api/chatbot/query` | POST | Natural Language processing | Yes |
+| Entity | Route | Method | Required Role | Specific Rule |
+| :--- | :--- | :--- | :--- | :--- |
+| **Auth** | \`/auth/login\` | POST | Public | Returns JWT + \`is_admin\`. |
+| **Users** | \`/users/\` | GET | Authenticated | List all employees. |
+| **Users** | \`/users/\` | POST | **Admin** | Create employee (Default: non-admin). |
+| **Users** | \`/users/<id>\` | GET/PUT | **Self or Admin** | Can't view/edit others unless Admin. |
+| **Users** | \`/users/<id>\` | DELETE | **Admin** | Cannot delete your own account. |
+| **Products** | \`/products/\` | POST | **Admin** | Regulatory compliance check. |
+| **Products** | \`/products/<id>\`| PUT/DEL | **Admin** | Inventory & Price management. |
+| **Sales** | \`/sales/\` | POST | Authenticated | Stock check + Prescription validation. |
+| **Sales** | \`/sales/<id>\` | DELETE | **Admin** | Reverts stock upon deletion. |
+| **Clients** | \`/clients/<id>\`| DELETE | **Admin** | Hard delete of patient records. |
+
+### 🛠️ Key Security Mechanisms Implemented
+* **Token Claims:** Using \`get_jwt().get('is_admin')\` to avoid database round-trips for permission checks.
+* **Payload Protection:** The \`UserInput\` model excludes \`is_admin\` to prevent self-elevation during registration.
+* **Stock Integrity:** Deleting a sale (Admin only) triggers a stock restoration logic in \`facade.py\`.
+EOF
 
 ---
 
