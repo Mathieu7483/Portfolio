@@ -10,6 +10,13 @@ This document provides the architecture, technical design, and development strat
 
 <em>Figure 1: Initial hand-drawn wireframe highlighting the core layout (Sidebar, KPI Cards, and Data Table). This original vision served as the blueprint for the final implementation using Material Design principles.</em> </p>
 
+
+<p align="center">
+<img src="https://github.com/Mathieu7483/Dashboard-Pharma/blob/main/Client/assets/img/Dashboard%20Mokup%20v2.png">
+</p>
+
+<em>Figure 2: Pre-Final high-fidelity Dashboard, integrating analytical widgets, CRM management, and the "Caducée" AI assistant within a sleek Material Design interface.</em> </p>
+
 ## 1. Design System Architecture
 
 ### 1.1 High-Level Architecture (Service-Oriented)
