@@ -108,6 +108,30 @@ The schema is optimized for **Regulatory Compliance** and **Pharmacy Analytics**
 ## 3. Interaction and Flow Diagrams
 
 ### 3.1 Analytics & Chart Generation Flow
+#### 3.1.1 Sequences diagram for POST Request for a client
+```mermaid
+sequenceDiagram
+    participant UI as Frontend (JS)
+    participant API as API Layer (Clients/Docs)
+    participant F as FacadeService
+    participant DB as SQLite (Models)
+
+    Note over UI, API: User fills the form & clicks 'Create'
+    UI->>API: POST /clients/ or /doctors/ (JSON + JWT)
+    
+    API->>API: Authenticate User (JWT Required)
+    
+    API->>F: create_entity(data)
+    
+    F->>F: Validate Business Rules (e.g. Unique License No)
+    
+    F->>DB: Instantiate Model & Save to DB
+    DB-->>F: Success (Object ID generated)
+    
+    F-->>API: New Entity Object
+    API-->>UI: 201 Created (Success Message)
+```
+#### 3.1.2 Sequences diagram for Create a sale (relation with client, and products)
 
 ```mermaid
 
