@@ -137,7 +137,7 @@ sequenceDiagram
     API-->>UI: 201 Created (SaleOutput)
 ```
 
-### 3.2 Chatbot Query Flow (Updated)
+### 3.2 Chatbot Query Flow
 ```mermaid
 sequenceDiagram
     participant U as User (Pharmacist)
@@ -162,6 +162,34 @@ sequenceDiagram
 ```
 
 The chatbot utilizes the `facade.py` to fetch real-time stock or price data before responding to the user.
+
+----
+### 3.3 Chatbot Sate diagram
+```mermaid
+stateDiagram-v2
+    [*] --> Idle: User input received
+    Idle --> Processing: NLU Analysis
+    
+    state Processing {
+        [*] --> IntentIdentification
+        IntentIdentification --> EntityExtraction
+    }
+
+    Processing --> DataLookup: Intent & Entity found
+    Processing --> ErrorState: Unknown Intent/Missing Entity
+    
+    state DataLookup {
+        [*] --> FacadeCall
+        FacadeCall --> Success: Product/Data exists
+        FacadeCall --> Failure: Product not in DB
+    }
+
+    Success --> ResponseGeneration: Formatting result
+    Failure --> ResponseGeneration: "Product not found" message
+    ErrorState --> ResponseGeneration: "I don't understand" message
+    
+    ResponseGeneration --> [*]: Send response to UI
+```
 
 ---
 
