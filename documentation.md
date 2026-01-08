@@ -1,6 +1,16 @@
 # 📚 Technical Documentation: Pharma Dashboard API
 
 This document provides the architecture, technical design, and development strategies for the **Pharma Dashboard & Chatbot** project.
+### 0.1 Prioritized User Stories
+
+| Role | Requirement | Goal | Priority |
+| :--- | :--- | :--- | :--- |
+| **Pharmacist** | As a user, I want to process a sale and check stock levels. | To ensure product availability and record transactions. | **Must** |
+| **Pharmacist** | As a user, I want to register a new doctor or client on the fly. | To complete a sale requiring a prescription without delay. | **Must** |
+| **Admin** | As an administrator, I want to manage employee accounts and roles. | To secure access to sensitive pharmaceutical data. | **High** |
+| **Admin** | As an administrator, I want to revert a sale and restore stock. | To correct human errors in inventory management. | **High** |
+| **Staff** | As a user, I want to ask the "Caducée" AI about inventory, clients, Doctors status, and more (planning, notificatations etc...). | To get hands-free, real-time data while assisting clients. | **Medium** |
+
 
 ## 0. Mockups
 
@@ -92,6 +102,33 @@ The schema is optimized for **Regulatory Compliance** and **Pharmacy Analytics**
 ---
 
 ## 3. Interaction and Flow Diagrams
+```mermaid
+
+sequenceDiagram
+    participant UI as Frontend (JS)
+    participant API as Sales API
+    participant F as FacadeService
+    participant DB as SQLite (Models)
+
+    UI->>API: POST /sales/ (JWT + items_data)
+    API->>API: Validate Token & Payload
+    API->>F: process_sale(items_data, client_id)
+    
+    loop Check Stock & Prescription
+        F->>DB: Query Product Stock & is_prescription_only
+        DB-->>F: Product Data
+        alt Insufficient Stock
+            F-->>API: raise ValueError("Stock error")
+            API-->>UI: 400 Bad Request
+        end
+    end
+
+    F->>DB: Create Sale & SaleItems
+    F->>DB: Update Product Inventory (Decrement)
+    DB-->>F: Success
+    F-->>API: New Sale Object
+    API-->>UI: 201 Created (SaleOutput)
+```
 
 ### 3.1 Analytics & Chart Generation Flow
 
