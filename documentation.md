@@ -300,32 +300,87 @@ stateDiagram-v2
 ```
 
 ---
+# 🔌 PART 4: API Specifications
 
-## 4. API Endpoints (Comprehensive List)
+## 4.1 External APIs & Libraries
 
-| Entity | Route | Method | Required Role | Specific Rule |
-| :--- | :--- | :--- | :--- | :--- |
-| **Auth** | \`/auth/login\` | POST | Public | Returns JWT + \`is_admin\`. |
-| **Users** | \`/users/\` | GET | Authenticated | List all employees. |
-| **Users** | \`/users/\` | POST | **Admin** | Create employee (Default: non-admin). |
-| **Users** | \`/users/<id>\` | GET/PUT | **Self or Admin** | Self-update or Admin oversight. |
-| **Users** | \`/users/<id>\` | DELETE | **Admin** | Cannot delete your own account. |
-| **Products** | \`/products/\` | POST | **Admin** | Regulatory compliance check. |
-| **Products** | \`/products/<id>\`| PUT/DEL | **Admin** | Inventory & Price management. |
-| **Doctors** | \`/doctors/\` | GET/POST | Authenticated | Employees can register new doctors. |
-| **Doctors** | \`/doctors/<id>\` | PUT | **Admin/Owner** | Update healthcare provider details. |
-| **Doctors** | \`/doctors/<id>\` | DELETE | **Admin** | Restricted (Data integrity for RX). |
-| **Clients** | \`/clients/\` | GET/POST | Authenticated | Create/List patients for transactions. |
-| **Clients** | \`/clients/<id>\` | PUT | Authenticated | Update patient contact information. |
-| **Clients** | \`/clients/<id>\` | DELETE | **Admin** | Hard delete of patient records. |
-| **Sales** | \`/sales/\` | POST | Authenticated | Stock check + Prescription validation. |
-| **Sales** | \`/sales/<id>\` | DELETE | **Admin** | Reverts stock upon deletion. |
+The system leverages specific external libraries and engines to ensure pharmaceutical-grade precision and security.
 
-### 🛠️ Key Security Mechanisms Implemented
-* **Token Claims:** Using \`get_jwt().get('is_admin')\` to avoid database round-trips for permission checks.
-* **Payload Protection:** The \`UserInput\` model excludes \`is_admin\` to prevent self-elevation during registration.
-* **Stock Integrity:** Deleting a sale (Admin only) triggers a stock restoration logic in \`facade.py\`.
-EOF
+| API / Library | Selection Rationale | Functional Role |
+| --- | --- | --- |
+| **spaCy (NLP)** | Industrial-strength NLP library with superior French language processing compared to NLTK. | Powers the **Caducée AI** engine for Intent Recognition and Entity Extraction (Medications). |
+| **Flask-RESTX** | Extension for Flask that adds support for quickly building REST APIs and encourages best practices. | Generates the interactive **Swagger (OpenAPI)** documentation and handles automatic payload validation. |
+| **Bcrypt** | Adaptive hashing function based on the Blowfish cipher, resistant to brute-force attacks. | Ensures secure storage of user credentials by hashing passwords before database insertion. |
+
+---
+
+## 4.2 Internal API Definition (Pharma-Core API)
+
+### 🔑 Authentication & Global Headers
+
+All requests (except `/auth/login`) must include the following header:
+`Authorization: Bearer <YOUR_JWT_TOKEN>`
+
+### 🛰️ Detailed Endpoint Specifications
+
+| Entity | Route | Method | Required Role | Input Format | Output Format | Specific Rule |
+| --- | --- | --- | --- | --- | --- | --- |
+| **Auth** | `/auth/login` | `POST` | Public | JSON: `username`, `password` | JSON: `access_token`, `is_admin` | Returns identity claims. |
+| **Users** | `/users/` | `GET` | Authenticated | None | Array of `User` objects | Lists all pharmacy staff. |
+| **Users** | `/users/` | `POST` | **Admin** | JSON: Full Profile | Created `User` object | Prevents self-elevation of roles. |
+| **Products** | `/products/` | `GET` | Authenticated | Query: `?q=name` | Array of `Product` objects | Real-time inventory lookup. |
+| **Products** | `/products/` | `POST` | **Admin** | JSON: Full Pharma Data | Created `Product` object | Regulatory compliance check. |
+| **Clients** | `/clients/` | `POST` | Authenticated | JSON: `Person` fields | Created `Client` object | Fast patient registration. |
+| **Sales** | `/sales/` | `POST` | Authenticated | JSON: `items`, `client_id` | `Sale` Summary | **Atomic:** Updates stock & records sale. |
+| **Sales** | `/sales/<id>` | `DELETE` | **Admin** | URL Parameter | `204 No Content` | **Reverts stock** upon deletion. |
+
+---
+
+## 4.3 Data Structures (Schemas)
+
+### **Input Example: Create Sale (POST /sales/)**
+
+To process a transaction, the frontend sends a structured list of items. The backend validates stock levels for each entry before committing.
+
+```json
+{
+  "client_id": "550e8400-e29b-41d4-a716-446655440000",
+  "doctor_id": "6eb3-41d4-a716-446655440011",
+  "prescription_provided": true,
+  "items": [
+    {
+      "product_id": "320e8400-e29b-41d4-a716-446655440022",
+      "quantity": 2
+    }
+  ]
+}
+
+```
+
+### **Output Example: Client Object (201 Created)**
+
+Standardized output ensuring the frontend receives the generated UUID and timestamps.
+
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "first_name": "Mathieu",
+  "last_name": "Godalier",
+  "email": "mathieu@example.com",
+  "phone": "0601020304",
+  "created_at": "2025-10-22T14:30:00Z"
+}
+
+```
+
+---
+
+## 4.4 Error Handling & Security Mechanisms
+
+* **Standardized Error Responses:** Every error returns a JSON body with a `message` and the corresponding HTTP status code.
+* **Token Claims:** Security is enforced via JWT claims (`is_admin`). This eliminates redundant database lookups for permission checks.
+* **Stock Integrity:** The `facade.py` layer ensures that deleting a sale record (Admin only) automatically restores the corresponding quantities to the inventory.
+* **Payload Protection:** Strict Marshalling (via `flask-restx`) prevents unauthorized fields (like `is_admin`) from being injected during user registration.
 
 ---
 
