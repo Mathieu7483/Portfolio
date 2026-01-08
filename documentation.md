@@ -103,13 +103,18 @@ The chatbot utilizes the `facade.py` to fetch real-time stock or price data befo
 | **Auth** | \`/auth/login\` | POST | Public | Returns JWT + \`is_admin\`. |
 | **Users** | \`/users/\` | GET | Authenticated | List all employees. |
 | **Users** | \`/users/\` | POST | **Admin** | Create employee (Default: non-admin). |
-| **Users** | \`/users/<id>\` | GET/PUT | **Self or Admin** | Can't view/edit others unless Admin. |
+| **Users** | \`/users/<id>\` | GET/PUT | **Self or Admin** | Self-update or Admin oversight. |
 | **Users** | \`/users/<id>\` | DELETE | **Admin** | Cannot delete your own account. |
 | **Products** | \`/products/\` | POST | **Admin** | Regulatory compliance check. |
 | **Products** | \`/products/<id>\`| PUT/DEL | **Admin** | Inventory & Price management. |
+| **Doctors** | \`/doctors/\` | GET/POST | Authenticated | Employees can register new doctors. |
+| **Doctors** | \`/doctors/<id>\` | PUT | **Admin/Owner** | Update healthcare provider details. |
+| **Doctors** | \`/doctors/<id>\` | DELETE | **Admin** | Restricted (Data integrity for RX). |
+| **Clients** | \`/clients/\` | GET/POST | Authenticated | Create/List patients for transactions. |
+| **Clients** | \`/clients/<id>\` | PUT | Authenticated | Update patient contact information. |
+| **Clients** | \`/clients/<id>\` | DELETE | **Admin** | Hard delete of patient records. |
 | **Sales** | \`/sales/\` | POST | Authenticated | Stock check + Prescription validation. |
 | **Sales** | \`/sales/<id>\` | DELETE | **Admin** | Reverts stock upon deletion. |
-| **Clients** | \`/clients/<id>\`| DELETE | **Admin** | Hard delete of patient records. |
 
 ### 🛠️ Key Security Mechanisms Implemented
 * **Token Claims:** Using \`get_jwt().get('is_admin')\` to avoid database round-trips for permission checks.
