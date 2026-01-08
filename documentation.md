@@ -82,6 +82,84 @@ graph TD
 ## 2. Data & Component Design
 
 ### 2.1 Entity-Relationship (ER) Summary (Updated)
+```mermaid
+erDiagram
+    USER ||--o{ PRODUCT : "creates"
+    USER ||--o{ SALE : "processes"
+    USER ||--o{ CLIENT : "manages"
+    USER ||--o{ DOCTOR : "manages"
+    CLIENT ||--o{ SALE : "associated_with"
+    DOCTOR ||--o{ SALE : "prescribes"
+    SALE ||--|{ SALE_ITEM : "contains"
+    PRODUCT ||--o{ SALE_ITEM : "is_sold_in"
+
+    USER {
+        string id PK "UUID"
+        string username UK
+        string password_hash
+        string first_name
+        string last_name
+        string email
+        string address
+        boolean is_admin
+        datetime created_at
+        datetime updated_at
+    }
+
+    PRODUCT {
+        string id PK "UUID"
+        string name UK
+        string active_ingredient
+        string dosage
+        int stock
+        float price
+        boolean is_prescription_only
+        string user_id FK
+    }
+
+    SALE {
+        string id PK "UUID"
+        float total_amount
+        datetime sale_date
+        boolean prescription_provided
+        string user_id FK
+        string doctor_id FK
+        string client_id FK
+    }
+
+    SALE_ITEM {
+        string id PK "UUID"
+        string sale_id FK
+        string product_id FK
+        int quantity
+        float price_at_sale
+    }
+
+    DOCTOR {
+        string id PK "UUID"
+        string first_name
+        string last_name
+        string email UK
+        string specialty
+        string phone
+        string address
+        string user_id FK
+        datetime created_at
+        datetime updated_at
+    }
+
+    CLIENT {
+        string id PK "UUID"
+        string first_name
+        string last_name
+        string email UK
+        string phone
+        string address
+        string user_id FK
+        datetime created_at
+        datetime updated_at
+    }
+```
 
 The schema is optimized for **Regulatory Compliance** and **Pharmacy Analytics**.
 
