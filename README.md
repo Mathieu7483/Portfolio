@@ -293,7 +293,7 @@ The project concluded with a comprehensive **End-to-End (E2E)** testing phase:
 
 ## 5. Deliverables & Evidence
 
-* **Source Repository:** [Link to your GitHub Repository](https://www.google.com/search?q=https://github.com/Mathieu7483/Dashboard-Pharma)
+* **Source Repository:** [Link to your GitHub Repository](https://github.com/Mathieu7483/Dashboard-Pharma)
 * **Sprint Planning & Retrospectives:** Documented in project `README.md` and Stage 4 documentation.
 * **Testing Evidence:** Results from `test_api_route.py` and Postman collection exports.
 * **Production/Demo Environment:** [Link to Video Demonstration](https://studio.youtube.com/video/emE1aqvT92M/edit)
