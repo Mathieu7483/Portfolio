@@ -100,7 +100,7 @@
 
 ---
 
-# **PART 2: Project Planning (In Progress)** ▶️
+# **PART 2: Project Planning** ✅
 
 ## **2. MVP Definition** 🏗️
 
@@ -248,7 +248,7 @@ We use this table to track project progress according to the curriculum's stages
 
 ---
 
-# **PART 3: Technical Documentation ▶️ IN PROGRESS** 
+# **PART 3: Technical Documentation ** ✅
 ## 📖 Technical Documentation
 For a detailed understanding of the system's architecture, design decisions, and development strategies, please refer to the complete technical documentation:
 
@@ -256,11 +256,63 @@ For a detailed understanding of the system's architecture, design decisions, and
 
 ---
 
-# **PART 4: MVP Development (To Come)** ⚪
-*(This section will document the construction progress, sprint reviews, and test results.)*
+# **PART 4: MVP Development** ✅
+
+### 1. Execution & Task Management
+
+Following the initial plan, development was executed in localized sprints, ensuring each feature met the "Definition of Done."
+
+* **Developer Focus:** Translation of User Stories into Python/Flask logic, adhering to PEP 8 standards and OOP principles.
+* **SCM Role:** Managed version control using a **Feature Branch Workflow**. Each feature (Auth, Inventory, NLU) was developed in isolation before being merged via Pull Requests (PRs) to ensure main branch stability.
+* **QA Integration:** Continuous verification of API endpoints using Postman to validate JSON schemas and HTTP response codes ($200$, $401$, $403$, etc.).
+
+### 2. Progress Monitoring & Adaptive Adjustment
+
+To maintain momentum and meet the Stage 4 deadline, the following tracking mechanisms were used:
+
+* **Daily Stand-ups:** Brief internal reviews to identify "blockers" (e.g., resolving complex SQLAlchemy joins for the Sales analytics).
+* **Metrics:** We tracked **Sprint Velocity** (tasks completed vs. planned) and **Bug Resolution Rates**.
+* **Adjustments:** When NLU entity extraction proved more complex than anticipated, we re-prioritized the `product_alias` logic to ensure core stock queries remained functional for the MVP.
+
+### 3. Sprint Reviews & Retrospectives
+
+At the end of each iteration, the team conducted:
+
+* **Sprint Reviews:** Demonstrating the functional Dashboard UI to simulate a pharmacist’s workflow.
+* **Retrospectives:** Identifying that while the Facade Pattern slowed down initial development, it drastically reduced time-to-fix during the final integration phase.
+
+### 4. Final Integration & QA Testing
+
+The project concluded with a comprehensive **End-to-End (E2E)** testing phase:
+
+* **Integration:** Verified that the Vanilla JS frontend correctly consumed the Flask REST API.
+* **DB Integrity:** Confirmed that SQLite transactions maintained ACID compliance even under "stress" data seeding.
+* **Final QA:** Executed `test_api_route.py` and `test_chatbot.sh` as a final gatekeeper before the Technical Manual Review.
 
 ---
 
-# **PART 5: Project Closure (To Come)** ⚪
-*(This section will include the Final Report, lessons learned, and future work recommendations.)*
+## 5. Deliverables & Evidence
+
+* **Source Repository:** [Link to your GitHub Repository](https://www.google.com/search?q=https://github.com/Mathieu7483/Dashboard-Pharma)
+* **Sprint Planning & Retrospectives:** Documented in project `README.md` and Stage 4 documentation.
+* **Testing Evidence:** Results from `test_api_route.py` and Postman collection exports.
+* **Production/Demo Environment:** [Link to Video Demonstration](https://studio.youtube.com/video/emE1aqvT92M/edit)
+
+---
+
+## 6. Technical Manual Review Preparation (Oral Exam)
+
+*As you prepare for the oral evaluation with your SWE (Software Engineer), ensure you can articulate the following:*
+
+| Topic | Key Talking Points |
+| --- | --- |
+| **App Architecture** | The **Facade Pattern** decouples our API from the Database for maintainability. |
+| **Database Design** | **3rd Normal Form (3NF)** implementation using SQLAlchemy to eliminate redundancy. |
+| **Security & RBAC** | Use of **Bcrypt** for hashing and custom **Python Decorators** for Role-Based Access Control. |
+| **NLU Logic** | How the `NLUProcessor` converts natural language into structured database queries. |
+| **Testing** | Difference between unit testing endpoints and integration testing the chatbot engine. |
+
+
+# **PART 5: Project Closure (In progress)** ▶️
+
 
